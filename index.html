@@ -619,7 +619,7 @@
   <section id="pricing">
     <div class="section-head">
       <h2>Get instant access</h2>
-      <div class="count">Secure checkout via Paystack</div>
+      <div class="count">Secure checkout via bank transfer</div>
     </div>
 
     <div class="price-wrap">
@@ -637,15 +637,6 @@
       <div class="price-right">
         <div class="price-was">₦2,500</div>
         <div class="price-tag"><sup>₦</sup>1,000</div>
-        <div class="buy-form">
-          <label for="email">Email (for your receipt &amp; download)</label>
-          <input type="email" id="email" placeholder="you@example.com" required>
-          <button class="btn" onclick="payWithPaystack()">Pay with Paystack</button>
-        </div>
-        <div class="secure-note">🔒 Payments processed securely by Paystack. Card, bank transfer &amp; USSD accepted.</div>
-
-        <div class="or-divider">— OR —</div>
-
         <div class="bank-transfer-box">
           <strong>Pay directly by bank transfer</strong>
           <div class="bank-details">
@@ -713,12 +704,10 @@ window.onerror = function(msg, url, line) {
   alert("ERROR: " + msg + " (line " + line + ")");
 };
 </script>
-<script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
   // ============================================================
-  // ⚙️ SETUP — replace these 3 values before going live:
+  // ⚙️ SETUP:
   // ============================================================
-  const PAYSTACK_PUBLIC_KEY = "pk_test_0d02018ce1b6fb8246610f00b168c81377c2a2f9";
   const PRICE_NGN = 1000; // price in Naira (₦1,000)
   const DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=10z426DpzctC_26JmLSZZuAzxUQMthqNu";
   // ============================================================
@@ -785,41 +774,6 @@ window.onerror = function(msg, url, line) {
     });
   });
 
-  function payWithPaystack(){
-    const emailInput = document.getElementById('email');
-    const email = emailInput.value.trim();
-    if(!email || !email.includes('@')){
-      emailInput.focus();
-      emailInput.style.borderColor = '#B23A24';
-      return;
-    }
-
-    const handler = PaystackPop.setup({
-      key: PAYSTACK_PUBLIC_KEY,
-      email: email,
-      amount: PRICE_NGN * 100, // Paystack expects kobo
-      currency: 'NGN',
-      ref: 'MLSCN_' + Math.floor((Math.random() * 1000000000) + 1),
-      metadata: {
-        custom_fields: [
-          { display_name: "Product", variable_name: "product", value: "MLSCN Clinical Chemistry Study Guide 2020-2024" }
-        ]
-      },
-      callback: function(response){
-        // Payment succeeded on the client side.
-        // For a solo seller this is often paired with checking the
-        // transaction later in the Paystack dashboard before large payouts.
-        document.getElementById('download-link').href = DOWNLOAD_URL;
-        const panel = document.getElementById('download-panel');
-        panel.classList.add('show');
-        panel.scrollIntoView({behavior:'smooth', block:'center'});
-      },
-      onClose: function(){
-        // user closed the payment popup without paying
-      }
-    });
-    handler.openIframe();
-  }
 </script>
 
 </body>
